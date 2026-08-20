@@ -1,2 +1,34 @@
 workflows:
-   faceunlock-android: { name: "FaceUnlock Android (legacy toolchain)", max_build_duration: 60, environment: { java: 11, groups: ["firebase"] }, scripts: [ { name: "Make gradlew executable", script: "chmod +x ./gradlew" }, { name: "Install legacy Android SDK platform and build-tools", script: "yes | sdkmanager --licenses > /dev/null || true; sdkmanager \"platforms;android-26\" \"build-tools;26.0.2\" > /dev/null || true" }, { name: "Build debug APK", script: "./gradlew assembleDebug --stacktrace --no-daemon" } ], artifacts: [ "app/build/outputs/**/*.apk", "app/build/outputs/**/mapping.txt" ], publishing: { firebase: { firebase_service_account: "$FIREBASE_SERVICE_ACCOUNT_CREDENTIAL_CONTENT", android: { app_id: "1:651577617636:android:73591f8f3c9fcb840690f1", groups: ["testers"] } } } }
+  faceunlock-android: { name: "FaceUnlock Android (legacy toolchain)", max_build_duration: 60, environment: { java: 11, groups: ["firebase"] }, scripts: [ { name: "Make gradlew executable", script: "chmod +x ./gradlew" }, { name: "Install legacy Android SDK platform and build-tools", script: "yes | sdkmanager --licenses > /dev/null || true; sdkmanager \"platforms;android-26\" \"build-tools;26.0.2\" > /dev/null || true" }, { name: "Build debug APK", script: "./gradlew assembleDebug --stacktrace --no-daemon" } ], artifacts: [ "app/build/outputs/**/*.apk", "app/build/outputs/**/mapping.txt" ], publishing: { firebase: { firebase_service_account: "$FIREBASE_SERVICE_ACCOUNT_CREDENTIAL_CONTENT", android: { app_id: "1:651577617636:android:73591f8f3c9fcb840690f1", groups: ["testers"] } } } }
+
+  faceunlock-ios-demo:
+    name: FaceUnlock iOS Demo
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    integrations:
+      app_store_connect: Codemagic-gushi-app
+    environment:
+      groups:
+        - firebase
+      ios_signing:
+        distribution_type: ad_hoc
+        bundle_identifier: com.vitania.faceunlockdemo
+      xcode: latest
+    scripts:
+      - name: Set up code signing settings on Xcode project
+        script: xcode-project use-profiles
+      - name: Build ipa for distribution
+        script: |
+          xcode-project build-ipa \
+            --project "ios/FaceUnlockDemo/FaceUnlockDemo.xcodeproj" \
+            --scheme "FaceUnlockDemo"
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      firebase:
+        firebase_service_account: $FIREBASE_SERVICE_ACCOUNT_CREDENTIAL_CONTENT
+        ios:
+          app_id: $FIREBASE_IOS_APP_ID
+          groups:
+            - testers

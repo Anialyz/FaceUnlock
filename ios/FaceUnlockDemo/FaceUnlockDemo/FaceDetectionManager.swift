@@ -25,8 +25,8 @@ final class FaceDetectionManager: NSObject, ObservableObject {
 
     private let captureSession = AVCaptureSession()
     private let videoOutput = AVCaptureVideoDataOutput()
-    private let sessionQueue = DispatchQueue(label: "com.vitania.faceunlockdemo.session")
-    private let visionQueue = DispatchQueue(label: "com.vitania.faceunlockdemo.vision")
+    private let sessionQueue = DispatchQueue(label: "com.hzshang.faceunlock.session")
+    private let visionQueue = DispatchQueue(label: "com.hzshang.faceunlock.vision")
 
     private var lastDetectionRequest: VNDetectFaceRectanglesRequest?
 

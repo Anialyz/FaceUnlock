@@ -12,7 +12,7 @@ workflows:
         - firebase
       ios_signing:
         distribution_type: ad_hoc
-        bundle_identifier: com.vitania.faceunlockdemo
+        bundle_identifier: com.hzshang.faceunlock
       xcode: latest
     scripts:
       - name: Set up code signing settings on Xcode project

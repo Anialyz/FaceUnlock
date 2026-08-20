@@ -47,8 +47,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:26.1.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:support-v13:26.1.0'
-    compile 'com.github.lewisdeane:LDialogs:1.2.0'
-    compile('com.github.omadahealth:lollipin:2.1.0@aar') {
+        compile('com.github.omadahealth:lollipin:2.1.0@aar') {
         transitive = true
     }
     testCompile 'junit:junit:4.12'

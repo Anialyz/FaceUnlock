@@ -10,18 +10,22 @@ workflows:
     environment:
       groups:
         - firebase
-      ios_signing:
-        distribution_type: ad_hoc
-        bundle_identifier: com.hzshang.faceunlock
+      vars:
+        BUNDLE_ID: com.hzshang.faceunlock
+        XCODE_PROJECT: ios/FaceUnlockDemo/FaceUnlockDemo.xcodeproj
+        XCODE_SCHEME: FaceUnlockDemo
       xcode: latest
     scripts:
+      - name: Set up keychain
+        script: keychain initialize
+      - name: Fetch or create Ad Hoc signing files
+        script: app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_ADHOC --create
+      - name: Add signing certificates to keychain
+        script: keychain add-certificates
       - name: Set up code signing settings on Xcode project
-        script: xcode-project use-profiles --project "ios/FaceUnlockDemo/FaceUnlockDemo.xcodeproj"
+        script: xcode-project use-profiles --project "$XCODE_PROJECT"
       - name: Build ipa for distribution
-        script: |
-          xcode-project build-ipa \
-            --project "ios/FaceUnlockDemo/FaceUnlockDemo.xcodeproj" \
-            --scheme "FaceUnlockDemo"
+        script: xcode-project build-ipa --project "$XCODE_PROJECT" --scheme "$XCODE_SCHEME"
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
